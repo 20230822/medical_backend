@@ -1,0 +1,31 @@
+{
+  "name": "medical_backend",
+  "version": "1.0.0",
+  "description": "한림대학교 의료 화상채팅 프로젝트",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/20230822/medical_backend.git"
+  },
+  "author": "realcold0, ysy56, soyeon0810",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/20230822/medical_backend/issues"
+  },
+  "homepage": "https://github.com/20230822/medical_backend#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
