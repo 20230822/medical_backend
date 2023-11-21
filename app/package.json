@@ -10,7 +10,20 @@
     "type": "git",
     "url": "git+https://github.com/20230822/medical_backend.git"
   },
-  "contributors": [{"name": "realcold0" , "url": "https://github.com/realcold0"}, {"name": "ysy56" , "url": "https://github.com/ysy56"}, {"name": "soyeon0810" , "url": "https://github.com/soyeon0810"}],
+  "contributors": [
+    {
+      "name": "realcold0",
+      "url": "https://github.com/realcold0"
+    },
+    {
+      "name": "ysy56",
+      "url": "https://github.com/ysy56"
+    },
+    {
+      "name": "soyeon0810",
+      "url": "https://github.com/soyeon0810"
+    }
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/20230822/medical_backend/issues"
@@ -23,7 +36,8 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
-    "mysql2": "^3.6.3"
+    "mysql2": "^3.6.3",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
