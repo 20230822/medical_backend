@@ -1,8 +1,14 @@
+"use strict";
+
 const bodyParser = require('body-parser');
 const express = require('express')
 var logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
 
+
+// 라우터 모듈 정의
+var dicomRouter = require('./src/routes/dicom/dicom');
 
 const app = express()
 const port = 3000
@@ -17,10 +23,12 @@ app.use(bodyParser.urlencoded({
     extended:true,
 }))
 app.use(cors({
-    origin:['http://loclahost:3000'],
+    origin:['http://127.0.0.1:3000'],
     methods : ['GET' , 'POST', 'PUT' , 'DELETE'],
     credential : true // 쿠키사용
 }))
+
+app.use('/api/dicom', dicomRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
