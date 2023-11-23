@@ -9,6 +9,7 @@ require('dotenv').config();
 
 // 라우터 모듈 정의
 var dicomRouter = require('./src/routes/dicom/dicom');
+var patientRouter = require('./src/routes/patient/patient')
 
 const app = express()
 const port = 3000
@@ -28,7 +29,9 @@ app.use(cors({
     credential : true // 쿠키사용
 }))
 
+// 라우터 경로 정의
 app.use('/api/dicom', dicomRouter);
+app.use('/api/patient', patientRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
