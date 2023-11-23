@@ -16,6 +16,20 @@ class DicomStorage {
             return { success: false, msg: error };
         }
     }
+
+    static async getPatientInfo(client) {
+        const query = "SELECT P.PATIENT_CD AS Patient_cd, P.SEX AS Sex, P.PATIENT_NM AS Patient_nm, P.REGION AS Region, P.BIRTH_DT AS Birth_dt, P.AGE AS Age, P.WEIGHT AS Weight, P.HEIGHT AS Height, M.PARTICIPANTS AS Participants, M.MEMO AS Memo "
+        + "FROM PATIENT_TB P JOIN MANAGEMENT_TB M ON P.PATIENT_CD = M.PATIENT_CD "
+        + "WHERE P.PATIENT_CD = ?;";
+        try{
+            [rows, fields] = await queryExe(query, [client.Patient_cd]);
+
+            return { success : true, data : rows };
+        }
+        catch(error){
+            return { success : false, msg : error } ;
+        }
+    }
 }
 
 module.exports = DicomStorage;

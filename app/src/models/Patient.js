@@ -21,6 +21,20 @@ class Patient {
             return { success: false, msg: error.message };
         }
     }
+
+    async detailInfo() {
+        const client = this.body;
+        try {
+            //데이터 저장
+            const response = await PatientStorage.getPatientInfo(client);
+            console.log(response);
+
+            return response;
+        } catch (error) {
+            console.error('Error processing PatientInfo:', error);
+            return { success: false, msg: error.message };
+        }
+    }
 }
 
 module.exports = Patient;
