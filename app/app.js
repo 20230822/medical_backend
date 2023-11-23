@@ -3,8 +3,9 @@ const express = require('express')
 var logger = require('morgan');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 
-const app = express()
+const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
@@ -19,12 +20,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended:true,
 }));
-const chat = require('./src/router/chat/chat')
 
+require('./src/controller/chat/chat')(io.of('/chat'));
 
-// app.use(express.static(path.join(__dirname, 'src/public')));
+app.use(express.static(path.join(__dirname, 'src', 'public')));
 
-app.use('/chat', chat);
 app.use(cors({
     origin:['http://localhost:3000'],
     methods : ['GET' , 'POST', 'PUT' , 'DELETE'],
@@ -34,5 +34,5 @@ app.use(cors({
 server.listen(port , () =>{
   console.log(`서버 구동! ${port} 포트에서 `);
 })
-app.set('io',io);
+
 

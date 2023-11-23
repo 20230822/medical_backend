@@ -22,9 +22,39 @@
   <script>
   $(function(){
     // socket.io 서버에 접속한다
-    var socket = io();
+    var socket = io('/chat');
 
-s
+    // 서버로 자신의 정보를 전송한다.
+    socket.emit('enter_room', 'room1');
+
+
+    // 서버로부터의 메시지가 수신되면
+    socket.on("message", function(data) {
+      $("#chatLogs").append("<div>" + data  + "</strong></div>");
+    });
+
+    socket.on("join", function(data) {
+      $("#chatLogs").append("<div>" + data  + "</strong></div>");
+    });
+
+    // Send 버튼이 클릭되면
+    $("form").submit(function(e) {
+      e.preventDefault();
+      var $msgForm = $("#msgForm");
+
+      // 서버로 메시지를 전송한다.
+      socket.emit("message",  $msgForm.val() );
+      $msgForm.val("");
+    });
+
+    function makeRandomName(){
+      var name = "";
+      var possible = "abcdefghijklmnopqrstuvwxyz";
+      for( var i = 0; i < 3; i++ ) {
+        name += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return name;
+    }
   });
   </script>
 </body>
