@@ -1,10 +1,14 @@
 "use strict";
 
 const dicomParser = require('dicom-parser');
+const fs = require('fs');
 const DicomStorage = require('./DicomStorage');
 const { response } = require('express');
 
 class Dicom {
+    constructor(body){
+        this.body = body;
+    }
 
     static async upload(file) {
         try {
@@ -31,6 +35,72 @@ class Dicom {
             return { success: false, msg: error.message };
         }
     }
+
+    /*
+    async download() {
+        const client = this.body;
+        const fileName = "test";
+        try {
+            const studyInstanceUid = client.studyInstanceUid;
+            // DicomStorage 클래스를 사용하여 데이터베이스에서 DICOM 데이터 가져오기
+            const dicomData = await DicomStorage.getDicomDataByStudyInstanceUid(studyInstanceUid);
+
+            const bufferData = dicomData.data;
+
+            // Assuming dicomData is an array of objects with pixelData property
+            const pixelData = bufferData.map(item => new Uint16Array(item.pixelData));
+
+            // Create a new DICOM dataset
+            const dataSet = new dicomParser.DataSet();
+
+            // Set the study instance UID
+            dataSet.string('x0020000d', studyInstanceUid);
+
+            // Set the pixel data
+            const pixelDataElement = {
+                tag: 'x7fe00010',
+                vr: 'OW', // OW for Uint16Array data
+                value: pixelData.buffer,
+            };
+
+            dataSet.elements.x7fe00010 = pixelDataElement;
+
+            // Serialize the dataset to a byte array
+            const dicomArray = dicomParser.writeDataSet(dataSet);
+
+            // Save the byte array to a DICOM file
+            fs.writeFileSync('output.dcm', new Uint8Array(dicomArray));
+
+            // ArrayBuffer를 Buffer로 변환
+            const buffer = Buffer.from(uint16ArrayDataArray);
+
+            console.log(buffer);
+          
+            // // DICOM 데이터를 메모리에 로드할 Uint8Array로 변환
+            // const byteArray = (dicomData.data).buffer;
+
+            // // DICOM 데이터 구문 분석
+            // const options = { TransferSyntaxUID: '1.2.840.10008.1.2' };
+            // const dataSet = dicomParser.createDicomDataSet(byteArray, options);
+
+            // // 구문 분석된 DICOM 데이터에서 필요한 정보를 추출
+            // const studyInstanceUidInData = dataSet.string('x0020000d');
+            // const pixelDataElement = dataSet.elements.x7fe00010;
+
+            // // 추출된 정보를 사용하여 픽셀 데이터를 파일로 저장
+            // //if (studyInstanceUidInData === studyInstanceUid) {
+            //     const filePath = `./downloads/${fileName}.dcm`;
+            //     fs.writeFileSync(filePath, Buffer.from(new Uint16Array(dataSet.byteArray.buffer, pixelDataElement.dataOffset, pixelDataElement.length / 2)));
+            //     return { success: true, msg: 'DICOM data saved to file successfully', filePath: filePath };
+            // //} else {
+            // //    return { success: false, msg: 'Study Instance UID in DICOM data does not match the specified Study Instance UID' };
+            // //}
+        } catch (error) {
+            console.error('Error downloading and saving DICOM data:', error);
+            return { success: false, msg: error.message };
+        }
+    }
+    */
 }
 
 module.exports = Dicom;
