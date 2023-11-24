@@ -1,9 +1,17 @@
+"use strict";
+
 const bodyParser = require('body-parser');
 const express = require('express')
 var logger = require('morgan');
 const cors = require('cors');
 const path = require('path');
+
 require('dotenv').config();
+
+
+// 라우터 모듈 정의
+var dicomRouter = require('./src/routes/dicom/dicom');
+var patientRouter = require('./src/routes/patient/patient')
 
 const app = express();
 const server = require('http').createServer(app);
@@ -31,8 +39,15 @@ app.use(cors({
     credential : true // 쿠키사용
 }))
 
+// 라우터 경로 정의
+app.use('/api/dicom', dicomRouter);
+app.use('/api/patient', patientRouter);
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+});
+
 server.listen(port , () =>{
   console.log(`서버 구동! ${port} 포트에서 `);
 })
-
 
