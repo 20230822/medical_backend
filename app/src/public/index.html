@@ -25,7 +25,13 @@
     var socket = io('/chat');
     const name = makeRandomName();
     // 서버로 자신의 정보를 전송한다.
-    socket.emit('enter_room', 'room1');
+    socket.emit('enter_room', '0229', acknowledgmentData =>{
+      if(acknowledgmentData ==false){
+          socket.on('error', data =>{
+            console.error(data);
+          })
+        }
+    });
 
 
     // 서버로부터의 메시지가 수신되면
@@ -49,10 +55,17 @@
       // 서버로 메시지를 전송한다.
       const msg = {
         "user_id" : name,
-        "patient_cd" : 321,
+        "patient_cd" : "0229",
         "content" : $msgForm.val(),
       }
-      socket.emit("message", JSON.stringify(msg));
+
+      socket.emit("message", JSON.stringify(msg), acknowledgmentData =>{
+        if(acknowledgmentData ==false){
+          socket.on('error', data =>{
+            console.error(data);
+          })
+        }
+      });
       $msgForm.val("");
     });
 

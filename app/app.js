@@ -43,10 +43,6 @@ app.use(cors({
 app.use('/api/dicom', dicomRouter);
 app.use('/api/patient', patientRouter);
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-});
-
 server.listen(port , () =>{
   console.log(`서버 구동! ${port} 포트에서 `);
 })
