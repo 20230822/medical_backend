@@ -23,17 +23,21 @@
   $(function(){
     // socket.io 서버에 접속한다
     var socket = io('/chat');
-
+    const name = makeRandomName();
     // 서버로 자신의 정보를 전송한다.
     socket.emit('enter_room', 'room1');
 
 
     // 서버로부터의 메시지가 수신되면
     socket.on("message", function(data) {
-      $("#chatLogs").append("<div>" + data  + "</strong></div>");
+      $("#chatLogs").append("<div>" + data.content + " from <strong>" + data.user_id  + "</strong></div>");
     });
 
     socket.on("join", function(data) {
+      $("#chatLogs").append("<div>" + data  + "</strong></div>");
+    });
+
+    socket.on("leave", function(data) {
       $("#chatLogs").append("<div>" + data  + "</strong></div>");
     });
 
@@ -43,7 +47,12 @@
       var $msgForm = $("#msgForm");
 
       // 서버로 메시지를 전송한다.
-      socket.emit("message",  $msgForm.val() );
+      const msg = {
+        "user_id" : name,
+        "patient_cd" : 321,
+        "content" : $msgForm.val(),
+      }
+      socket.emit("message", JSON.stringify(msg));
       $msgForm.val("");
     });
 
