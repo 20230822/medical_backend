@@ -6,7 +6,8 @@ const response = require('../../../app');
 const process = {
     upload : async (req, res) => {
         try {
-            const response = await Dicom.upload(req.file);
+            const dicom = new Dicom(req.body);
+            const response = await dicom.upload(req.file);
 
             if (response.success === true){
                 res.status(200).json(response);
@@ -18,8 +19,7 @@ const process = {
             res.status(500).json;
         }
     },
-
-    /*
+    
     download : async (req, res) => {
         try {
             const dicom = new Dicom(req.body);
@@ -36,7 +36,7 @@ const process = {
             res.status(500).json;
         }
     }
-    */
+    
 }
 
 module.exports = {
