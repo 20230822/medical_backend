@@ -24,20 +24,6 @@
       "url": "https://github.com/soyeon0810"
     }
   ],
-  "contributors": [
-    {
-      "name": "realcold0",
-      "url": "https://github.com/realcold0"
-    },
-    {
-      "name": "ysy56",
-      "url": "https://github.com/ysy56"
-    },
-    {
-      "name": "soyeon0810",
-      "url": "https://github.com/soyeon0810"
-    }
-  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/20230822/medical_backend/issues"
@@ -45,7 +31,6 @@
   "homepage": "https://github.com/20230822/medical_backend#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
-    "canvas": "^2.11.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dicom-parser": "^1.8.21",
@@ -53,9 +38,9 @@
     "express": "^4.18.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "node-static": "^0.7.11",
-    "pngjs": "^7.0.0",
     "mysql2": "^3.6.3",
+    "node-static": "^0.7.11",
+    "path": "^0.12.7",
     "socket.io": "^4.7.2"
   },
   "devDependencies": {

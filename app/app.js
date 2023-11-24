@@ -1,12 +1,10 @@
 "use strict";
 
 const bodyParser = require('body-parser');
-const express = require('express')
 const express = require('express');
 const path = require('path'); // path 모듈 추가
 var logger = require('morgan');
 const cors = require('cors');
-const path = require('path');
 
 require('dotenv').config();
 
