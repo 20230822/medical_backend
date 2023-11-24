@@ -2,30 +2,37 @@ const bodyParser = require('body-parser');
 const express = require('express')
 var logger = require('morgan');
 const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
 
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
-const app = express()
 const port = 3000
 
 app.use(logger('dev'));
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({
     extended:false,
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended:true,
-}))
+}));
+
+require('./src/controller/chat/chat')(io.of('/chat'));
+
+app.use(express.static(path.join(__dirname, 'src', 'public')));
+
 app.use(cors({
-    origin:['http://loclahost:3000'],
+    origin:['http://localhost:3000'],
     methods : ['GET' , 'POST', 'PUT' , 'DELETE'],
     credential : true // 쿠키사용
 }))
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-});
+server.listen(port , () =>{
+  console.log(`서버 구동! ${port} 포트에서 `);
+})
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-});
+
