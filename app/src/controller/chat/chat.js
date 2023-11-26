@@ -33,7 +33,6 @@ module.exports = function (io) {
                     //이전 채팅 기록 가져오기
 
                     const rows = await ChatMsgStorage.getEnterChatLog(patient_cd);
-                    console.log(rows);
                     acknowledgmentEnterRoom(true);
                     await socket.emit(EVENT.MSG_LOG, rows);
                     
@@ -44,7 +43,7 @@ module.exports = function (io) {
                     acknowledgmentEnterRoom(false);
                     socket.emit( EVENT.ERROR , '존재하지 않는 환자입니다.');
                 }
-            }else{
+            }else{  //환자 불러오는 중 에러
                 console.log(result.error);
                 acknowledgmentEnterRoom(false);
                 socket.emit(EVENT.ERROR , result.error);
@@ -67,9 +66,11 @@ module.exports = function (io) {
                 }
             });
            
+            //에러 발생이벤트 받았을때
             socket.on( EVENT.ERROR, (error) =>{
                 console.log(error);
             });
+
             //나갔을때
             socket.on(EVENT.DISCONNECT, ()=>{
                 io.to(patient_cd).emit('join', `누군가 ${patient_cd}에서 나갔습니다.`);
