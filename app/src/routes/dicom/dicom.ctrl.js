@@ -6,7 +6,7 @@ const response = require('../../../app');
 const process = {
     upload : async (req, res) => {
         try {
-            const response = await Dicom.upload(req.body, req.file);
+            const response = await Dicom.uploadFiles(req.body, req.files);
 
             if (response.success === true){
                 res.status(200).json(response);

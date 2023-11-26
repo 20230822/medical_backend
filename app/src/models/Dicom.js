@@ -6,20 +6,21 @@ const fs = require("fs");
 const AWS = require("aws-sdk");
 const { response } = require('express');
 
+const s3 = new AWS.S3({
+    accessKeyId : process.env.AWS_ACCESS_KEY,
+    secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY
+});
+
 class Dicom {
     constructor(body){
         this.body = body;
     }
-    
+
     static async upload(client, file) {
-        const s3 = new AWS.S3({
-            accessKeyId : process.env.AWS_ACCESS_KEY,
-            secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY
-        });
     
         const params = {
             Bucket : "aws-ko-medical-develop",
-            Key : "medical/" + file.originalname,
+            Key : client.Patient_cd + "/" + file.originalname,
             Body : file.buffer,
             ContentType : "application/dicom",
             overwrite: false
@@ -38,6 +39,18 @@ class Dicom {
             } else {
                 throw err;
             }
+        }
+    }
+
+    static async uploadFiles(client, files) {
+        const uploadPromises = files.map(file => this.upload(client, file));
+      
+        try {
+            const results = await Promise.all(uploadPromises);
+            // results 배열에는 각 파일에 대한 업로드 결과가 들어 있습니다.
+            console.log(results);
+        } catch (error) {
+            console.error(`Error uploading files. ${error.message}`);
         }
     }
 

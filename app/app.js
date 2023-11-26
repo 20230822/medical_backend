@@ -22,7 +22,9 @@ const io = require('socket.io')(server);
 
 
 
-const PORT = 3000;
+// const PORT = 3000;
+// fornt_test
+const PORT = 8000;
 
 // Socket.IO 연결 설정
 io.on('connection', socket => {
@@ -89,6 +91,8 @@ require('./src/controller/chat/chat')(io.of('/chat'));
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
 app.use(cors({
+    // origin:['http://localhost:3000'],
+    // front_test
     origin:['http://localhost:3000'],
     methods : ['GET' , 'POST', 'PUT' , 'DELETE'],
     credential : true // 쿠키사용
