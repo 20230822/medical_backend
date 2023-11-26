@@ -1,13 +1,9 @@
 "use strict";
 
 const dicomParser = require('dicom-parser');
-const fs = require('fs');
-const path = require('path');
-const PNG = require('pngjs').PNG;
 
 const DicomStorage = require('./DicomStorage');
 const { response } = require('express');
-const { createCanvas } = require('canvas');
 
 class Dicom {
     constructor(body){
