@@ -11,8 +11,7 @@ class Dicom {
         this.body = body;
     }
     
-    static async upload(file) {
-        console.log(file);
+    static async upload(client, file) {
         const s3 = new AWS.S3({
             accessKeyId : process.env.AWS_ACCESS_KEY,
             secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY
@@ -22,15 +21,23 @@ class Dicom {
             Bucket : "aws-ko-medical-develop",
             Key : "medical/" + file.originalname,
             Body : file.buffer,
-            ContentType : "application/dicom"
+            ContentType : "application/dicom",
+            overwrite: false
         };
-    
+
         try {
             const data = await s3.upload(params).promise();
+            const result = await DicomStorage.saveToDatabase(client.Patient_cd, params.Key);
+
+            console.log(result);
             console.log(`File uploaded successfully. ${data}`);
-            return data;  // You might want to return the uploaded data
+            return { success : true };
         } catch (err) {
-            throw err;
+            if (err.code === 'EntityAlreadyExists') {
+                console.log('File with the same key already exists.');
+            } else {
+                throw err;
+            }
         }
     }
 
@@ -55,14 +62,17 @@ class Dicom {
                 data.Body
             );
         });
-    
-        // try {
-        //     const data = await s3.upload(params).promise();
-        //     console.log(`File uploaded successfully. ${data}`);
-        //     return data;  // You might want to return the uploaded data
-        // } catch (err) {
-        //     throw err;
-        // }
+
+        /*
+         const data = await s3.getObject(params).promise();
+
+        // Set appropriate headers for the response
+        res.setHeader('Content-Disposition', `attachment; filename=test-download.${data.ContentType.split('/')[1]}`);
+        res.setHeader('Content-Type', data.ContentType);
+
+        // Send the file data as the response
+        res.send(data.Body);
+        */
     }
     
 }
