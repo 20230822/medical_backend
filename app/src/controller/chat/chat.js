@@ -1,6 +1,7 @@
 const ChatMsg = require('../../models/chat/ChatMsg');
 const EVENT = require('./chatEnum');
 const PatientStorage = require('../../models/PatientStorage');
+const ChatMsgStorage = require('../../models/chat/ChatMsgStorage');
 
 
 function formatDate() {
@@ -18,6 +19,9 @@ function formatDate() {
     return formattedDate;
 }
 
+
+
+
 module.exports = function (io) {
     io.on(EVENT.CONNECTION , async (socket) =>{
         socket.on( EVENT.ENTER , async (patient_cd , acknowledgmentEnterRoom) =>{
@@ -26,6 +30,13 @@ module.exports = function (io) {
             if(result.success == true){
                 if(result.data.length > 0){  //존재하는 환자면
                     socket.join(patient_cd); //방에 참가
+                    //이전 채팅 기록 가져오기
+
+                    const rows = await ChatMsgStorage.getEnterChatLog(patient_cd);
+                    console.log(rows);
+                    acknowledgmentEnterRoom(true);
+                    await socket.emit(EVENT.MSG_LOG, rows);
+                    
                     io.to(patient_cd).emit( EVENT.JOIN , `누군가 ${patient_cd}에 들어왔습니다.`); //방에 참가했다는 메시지
                     console.log('누군가', patient_cd, '에 들어와습니다.');
                 }

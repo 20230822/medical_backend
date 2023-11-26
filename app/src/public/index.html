@@ -30,7 +30,16 @@
           socket.on('error', data =>{
             console.error(data);
           })
-        }
+      }
+      if(acknowledgmentData == true){
+        console.log('메시지 로그');
+        socket.on('message_log', data =>{
+        data.forEach(element => {
+          $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        });
+      })
+      }
+
     });
 
 
