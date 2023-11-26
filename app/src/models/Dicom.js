@@ -33,6 +33,37 @@ class Dicom {
             throw err;
         }
     }
+
+    static async download() {
+        const s3 = new AWS.S3({
+            accessKeyId : process.env.AWS_ACCESS_KEY,
+            secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY
+        });
+
+        const params = {
+            Bucket : "aws-ko-medical-develop",
+            Key : "medical/" + "dicomTest"
+        };
+
+        s3.getObject(params, (err, data) => {
+            if (err) {
+                throw err;
+            }
+
+            fs.writeFileSync(
+                `test-download.${data.ContentType.split("/")[1]}`,
+                data.Body
+            );
+        });
+    
+        // try {
+        //     const data = await s3.upload(params).promise();
+        //     console.log(`File uploaded successfully. ${data}`);
+        //     return data;  // You might want to return the uploaded data
+        // } catch (err) {
+        //     throw err;
+        // }
+    }
     
 }
 
