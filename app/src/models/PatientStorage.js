@@ -1,19 +1,36 @@
 "use strict";
-
+const maria = require('../database/maria');
 const queryExe = require('./common');
 
 class DicomStorage {
 
     static async savePatientInfo(client) {
-        const query1 = "INSERT INTO PATIENT_TB (PATIENT_CD, SEX, PATIENT_NM, REGION, HOSPITAL, BIRTH_DT, AGE, WEIGHT, HEIGHT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        const query2 = "INSERT INTO MANAGEMENT_TB (PATIENT_CD, PARTICIPANTS, MEMO) VALUES (?, ?, ?);";
+        let conn;
+        
         try {
-            await queryExe(query1, [client.Patient_cd, client.Sex, client.Patient_nm, client.Region, client.Hospital, client.Birth_dt, client.Age, client.Weight, client.Height]);
-            await queryExe(query2, [client.Patient_cd, client.Participants, client.Memo]);
-    
-            return { success: true, msg: "데이터가 성공적으로 저장되었습니다." };
+            conn = await maria.getConnection();
+            await conn.beginTransaction();
+
+            const check_query = "SELECT COUNT(*) FROM PATIENT_TB WHERE PATIENT_CD = ?;";
+            const insert_patient_query = "INSERT INTO PATIENT_TB (PATIENT_CD, SEX, PATIENT_NM, REGION, HOSPITAL, BIRTH_DT, AGE, WEIGHT, HEIGHT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            const insert_mamagement_query = "INSERT INTO MANAGEMENT_TB (PATIENT_CD, PARTICIPANTS, MEMO) VALUES (?, ?, ?);";
+            
+            let[rows, fields] = await conn.query(check_query, [client.Patient_cd]);
+            const {COUNT : count} = rows[0];
+
+            if (count != 0) {
+                await conn.query(insert_patient_query, [client.Patient_cd, client.Sex, client.Patient_nm, client.Region, client.Hospital, client.Birth_dt, client.Age, client.Weight, client.Height]);
+                await conn.query(insert_mamagement_query, [client.Patient_cd, client.Participants, client.Memo]);
+            }
+
+            await conn.commit();
+            return { success: true, msg: "트랜잭션 성공 : 데이터가 성공적으로 저장되었습니다." };
         } catch (error) {
+            await conn.rollback();
+            console.log(error);
             return { success: false, msg: error };
+        } finally {
+            conn.release();
         }
     }
 
