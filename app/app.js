@@ -5,8 +5,9 @@ const express = require('express');
 const path = require('path'); // path 모듈 추가
 var logger = require('morgan');
 const cors = require('cors');
+const dotenv = require("dotenv");
 
-require('dotenv').config();
+dotenv.config();
 
 
 // 라우터 모듈 정의
