@@ -12,8 +12,8 @@ dotenv.config();
 
 // 라우터 모듈 정의
 var dicomRouter = require('./src/routes/dicom/dicom');
-var patientRouter = require('./src/routes/patient/patient')
-require('dotenv').config();
+var patientRouter = require('./src/routes/patient/patient');
+var userRouter = require('./src/routes/user/user');
 
 // Express 애플리케이션 생성
 const app = express();
@@ -97,6 +97,7 @@ app.use(cors({
 // 라우터 경로 정의
 app.use('/api/dicom', dicomRouter);
 app.use('/api/patient', patientRouter);
+app.use('/api/user', userRouter);
 
 // 정적 파일 서빙
 app.use(express.static(path.join(__dirname, 'src','public','video')));
