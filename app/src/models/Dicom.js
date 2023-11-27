@@ -28,7 +28,7 @@ class Dicom {
 
         try {
             const data = await s3.upload(params).promise();
-            const result = await DicomStorage.saveToDatabase(client.Patient_cd, params.Key);
+            const result = await DicomStorage.saveToDatabase(client.Patient_cd, params.Key, file.originalname);
 
             console.log(result);
             console.log(`File uploaded successfully. ${data}`);
@@ -43,12 +43,14 @@ class Dicom {
     }
 
     static async uploadFiles(client, files) {
+        console.log(files);
         const uploadPromises = files.map(file => this.upload(client, file));
       
         try {
             const results = await Promise.all(uploadPromises);
             // results 배열에는 각 파일에 대한 업로드 결과가 들어 있습니다.
             console.log(results);
+            return { success : true };
         } catch (error) {
             console.error(`Error uploading files. ${error.message}`);
         }
