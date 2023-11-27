@@ -82,9 +82,26 @@ module.exports = function (io) {
                     socket.emit(EVENT.ERROR , result.error);
                 }
             });
-           
 
-            socket.on('day_log', async (patient_cd ,day, acknowledgment) =>{
+            socket.on('down_message', async (data, acknowledgment) =>{
+                try {
+                    //받은 메시지를 기준으로 위의 20개를 받아옴
+                    const msg = JSON.parse(data);
+                    const result = await ChatMsgStorage.getUpperChatLog(msg);
+                    acknowledgment(true);
+                    await socket.emit(EVENT.MSG_LOG, result);  //데이터 전달
+
+                } catch (error) {
+                    console.log(error);
+                    acknowledgment(false);
+                    socket.emit(EVENT.ERROR , result.error);
+                }
+            });
+
+
+
+            //날짜 기준으로 해당 날짜 불러오기
+            socket.on('day_log', async (patient_cd , day, acknowledgment) =>{
                 try{
                     const result = await ChatMsgStorage.getChatLogByDay(patient_cd, day);
                     acknowledgment(true);
@@ -96,7 +113,22 @@ module.exports = function (io) {
                 }
             });
 
+            socket.on('find_message_key', async (patient_cd , content, acknowledgment) =>{
+                try {
+                    const resultKey = await ChatMsgStorage.getChatKeyByContent(patient_cd, content);
+                    console.log(resultKey);
+                    await acknowledgment(resultKey);
 
+                    socket.on('next', async ( key ,acknowledgment) =>{
+                        const resultLog = await ChatMsgStorage.getChatLogByKey(patient_cd, key.chat_id);
+                        await acknowledgment(resultLog);
+                    })
+                } catch (error) {
+                    console.log(error);
+                    acknowledgment(false);
+                    socket.emit(EVENT.ERROR , result.error);
+                }
+            });
 
             //에러 발생이벤트 받았을때
             socket.on( EVENT.ERROR, (error) =>{

@@ -74,6 +74,19 @@
         //   }
         // })
 
+
+        //채팅 내용으로 찾기
+        console.log('채팅 찾기 content : a');
+        socket.emit('find_message_key' , '0229' , 'a', acknowledgmentData =>{
+          if(acknowledgmentData){
+            console.log('키값 받음' ,acknowledgmentData);
+            socket.emit('next', acknowledgmentData[0] , acknowledgmentData =>{
+              acknowledgmentData.forEach(element =>{
+                $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+              })
+            })
+          }
+        })
       })
       }
 
