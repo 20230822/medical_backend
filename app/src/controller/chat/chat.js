@@ -83,6 +83,21 @@ module.exports = function (io) {
                 }
             });
            
+
+            socket.on('day_log', async (patient_cd ,day, acknowledgment) =>{
+                try{
+                    const result = await ChatMsgStorage.getChatLogByDay(patient_cd, day);
+                    acknowledgment(true);
+                    socket.emit(EVENT.MSG_LOG, result);
+                }catch(error){
+                    console.log(error);
+                    acknowledgment(false);
+                    socket.emit(EVENT.ERROR , result.error);
+                }
+            });
+
+
+
             //에러 발생이벤트 받았을때
             socket.on( EVENT.ERROR, (error) =>{
                 console.log(error);

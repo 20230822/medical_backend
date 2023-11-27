@@ -44,5 +44,19 @@ class ChatMsgStorage{
             console.log(error);
         }
     }
+
+    static async getChatLogByDay(patient_cd,day){
+        const query = 
+        `SELECT USER_ID AS user, PATIENT_CD AS patient, CONTENT as content, SEND_DT as send_date
+        FROM CHAT_TB
+        WHERE PATIENT_CD = ?
+        AND DATE(SEND_DT) like ?;`
+        try {
+            [rows, fields] = await queryExe(query, [patient_cd, `${day}%`]);
+            return rows
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
 module.exports = ChatMsgStorage;
