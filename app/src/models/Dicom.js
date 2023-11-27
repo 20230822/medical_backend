@@ -89,6 +89,19 @@ class Dicom {
         res.send(data.Body);
         */
     }
+
+    async list() {
+        const client = this.body;
+        try {
+            const response = await DicomStorage.getFileList(client.Patient_cd);
+            console.log(response);
+
+            return response;
+        } catch (error) {
+            console.error('Error processing PatientInfo:', error);
+            return { success: false, msg: error.message };
+        }
+    }
     
 }
 

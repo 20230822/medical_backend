@@ -14,6 +14,17 @@ class DicomStorage {
             return { success: false, msg: error };
         }
     }
+
+    static async getFileList(patientCd) {
+        const query = "SELECT FILE_NM AS File_nm FROM DICOMFILE_TB WHERE PATIENT_CD = ?;"; // string, blob
+        try {
+            [rows, fields] = await queryExe(query, [patientCd]);
+    
+            return { success : true, data : rows };
+        } catch (error) {
+            return { success: false, msg: error };
+        }
+    }
 }
 
 module.exports = DicomStorage;
