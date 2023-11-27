@@ -61,6 +61,36 @@ class DicomStorage {
             return { success : false, msg : error } ;
         }
     }
+
+    static async delPatientInfo(Patient_cd) {
+        let conn;
+        
+        try {
+            conn = await maria.getConnection();
+            await conn.beginTransaction();
+
+            const check_query = "SELECT COUNT(*) FROM PATIENT_TB WHERE PATIENT_CD = ?;";
+            const insert_patient_query = "DELETE FROM PATIENT_TB WHERE PATIENT_CD = ?;";
+            const insert_mamagement_query = "DELETE FROM MANAGEMENT_TB WHERE PATIENT_CD = ?;";
+            
+            let[rows, fields] = await conn.query(check_query, [Patient_cd]);
+            const {COUNT : count} = rows[0];
+
+            if (count != 0) {
+                await conn.query(insert_patient_query, [Patient_cd]);
+                await conn.query(insert_mamagement_query, [Patient_cd]);
+            }
+
+            await conn.commit();
+            return { success: true, msg: "트랜잭션 성공 : 데이터가 성공적으로 저장되었습니다." };
+        } catch (error) {
+            await conn.rollback();
+            console.log(error);
+            return { success: false, msg: error };
+        } finally {
+            conn.release();
+        }
+    }
 }
 
 module.exports = DicomStorage;
