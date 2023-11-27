@@ -4,7 +4,7 @@ const queryExe = require('./common');
 
 class UserStorage {
     static async getUserInfo(id) {
-        const query = "SELECT USER_ID, USER_PW FROM USER_TB WHERE USER_ID = ?;";
+        const query = "SELECT USER_ID, USER_PW, USER_CLASS FROM USER_TB WHERE USER_ID = ?;";
         try{
             [rows, fields] = await queryExe(query, [id]);
 

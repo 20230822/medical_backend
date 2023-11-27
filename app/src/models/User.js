@@ -13,12 +13,12 @@ class User {
         try {
             console.log(client.id);
             //데이터 저장
-            const { USER_ID : id, USER_PW : psword} =  await UserStorage.getUserInfo(client.id);
+            const { USER_ID : id, USER_PW : psword, USER_CLASS : user_class} =  await UserStorage.getUserInfo(client.id);
 
             if (id)
             {
                 if (client.psword == psword) {
-                    return { success: true, msg: '로그인 성공!' };
+                    return { success: true, msg: '로그인 성공!', data : user_class };
                 }
                 return { success: false, msg: '비밀번호가 틀렸습니다.' };
             }
