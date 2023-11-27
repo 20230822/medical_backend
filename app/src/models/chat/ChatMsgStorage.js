@@ -10,13 +10,36 @@ class ChatMsgStorage{
     }
 
     static async getEnterChatLog(patient_cd){
-        const query = 'SELECT USER_ID AS user, PATIENT_CD AS patient, CONTENT as content, SEND_DT as date FROM CHAT_TB WHERE PATIENT_CD = ? ORDER BY SEND_DT ASC;';
+        const query = 
+        `SELECT CHAT_PK AS chat_id, USER_ID AS user, PATIENT_CD AS patient, CONTENT as content, SEND_DT as send_date
+        FROM (
+            SELECT * FROM CHAT_TB
+            WHERE PATIENT_CD = ?
+            ORDER BY SEND_DT DESC LIMIT 20
+        ) AS recent_chats
+        ORDER BY send_date ASC;`;
         try {
             [rows, fields] = await queryExe(query, [patient_cd]);
-            
-           
             return rows;
 
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getUpperChatLog(msg){
+        const query = 
+        `SELECT CHAT_PK AS chat_id, USER_ID AS user, PATIENT_CD AS patient, CONTENT as content, SEND_DT as send_date
+        FROM (
+            SELECT * FROM CHAT_TB
+            WHERE PATIENT_CD = ?
+            AND CHAT_PK < ?
+            ORDER BY SEND_DT DESC LIMIT 20
+        ) AS recent_chats
+        ORDER BY send_date ASC;`;
+        try {
+            [rows, fields] = await queryExe(query, [msg.patient, msg.chat_id]);
+            return rows;
         } catch (error) {
             console.log(error);
         }

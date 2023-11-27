@@ -50,19 +50,36 @@ module.exports = function (io) {
             }
 
             //메시지 보냈을때
-            socket.on( EVENT.MESSAGE , async (msg, acknowledgment) => {
+            socket.on( EVENT.MESSAGE , async (data, acknowledgment) => {
                 try {
-                    const data = JSON.parse(msg);
-                    const chatMsg = new ChatMsg(data.user_id, data.content, data.patient_cd, formatDate());
+                    const msg = JSON.parse(data);
+                    const chatMsg = new ChatMsg(msg.user_id, msg.content, msg.patient_cd, formatDate());
                     const check = await chatMsg.sendChatMsg(); //db저장 후
                     acknowledgment(check); //콜백
-                    io.to(patient_cd).emit('message', data); //방사람들에게 전달
+                    io.to(patient_cd).emit('message', msg); //방사람들에게 전달
                     if(check == false){
                         socket.emit('error', "메시지 형태가 잘못되었습니다.");
                     }
                 } catch (error) {
                     console.log(error);
                     acknowledgment(false);
+                    socket.emit(EVENT.ERROR , result.error);
+                }
+            });
+
+            //이전 기록 불러오기
+            socket.on('upper_message', async (data, acknowledgment) =>{
+                try {
+                    //받은 메시지를 기준으로 위의 20개를 받아옴
+                    const msg = JSON.parse(data);
+                    const result = await ChatMsgStorage.getUpperChatLog(msg);
+                    acknowledgment(true);
+                    await socket.emit(EVENT.MSG_LOG, result);  //데이터 전달
+
+                } catch (error) {
+                    console.log(error);
+                    acknowledgment(false);
+                    socket.emit(EVENT.ERROR , result.error);
                 }
             });
            

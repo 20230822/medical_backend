@@ -14,6 +14,8 @@
         <input type="text" class="form-control" id="msgForm">
       </div>
       <button type="submit" class="btn btn-primary">Send</button>
+      <button type="button" class="btn btn-secondary" id="otherButton">Other Action</button>
+
     </form>
     <div id="chatLogs"></div>
   </div>
@@ -37,6 +39,26 @@
         data.forEach(element => {
           $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
         });
+
+        // console.log('upper Log!');
+        // const msg = {
+        // "chat_id" : 31,
+        // "user" : "ulm",
+        // "patient" : "0229",
+        // "content" : "upper message",
+        // }
+
+        // socket.emit('upper_message', JSON.stringify(msg), acknowledgmentData =>{
+        //   if(acknowledgmentData == true){
+        //     socket.on('message_log', data =>{
+        //       console.log(data);
+        //       data.forEach(element => {
+        //         $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        //       });
+        //     })
+        //   }
+        // })
+
       })
       }
 
@@ -77,6 +99,10 @@
       });
       $msgForm.val("");
     });
+
+    $("#otherButton").on("click", function() {
+        
+    })
 
     function makeRandomName(){
       var name = "";
