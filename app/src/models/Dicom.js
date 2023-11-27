@@ -17,10 +17,12 @@ class Dicom {
     }
 
     static async upload(client, file) {
-    
+
+        const file_nm = Buffer.from(file.originalname, 'utf-8');
+
         const params = {
             Bucket : "aws-ko-medical-develop",
-            Key : client.Patient_cd + "/" + file.originalname,
+            Key : client.Patient_cd + "/" + file_nm,
             Body : file.buffer,
             ContentType : "application/dicom",
             overwrite: false
@@ -28,7 +30,7 @@ class Dicom {
 
         try {
             const data = await s3.upload(params).promise();
-            const result = await DicomStorage.saveToDatabase(client.Patient_cd, params.Key, file.originalname);
+            const result = await DicomStorage.saveToDatabase(client.Patient_cd, params.Key, file_nm);
 
             console.log(result);
             console.log(`File uploaded successfully. ${data}`);

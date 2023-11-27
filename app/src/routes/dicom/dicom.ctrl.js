@@ -7,7 +7,8 @@ const process = {
     upload : async (req, res) => {
         try {
             const response = await Dicom.uploadFiles(req.body, req.files);
-
+            
+            console.log(response.success);
             if (response.success === true){
                 res.status(200).json(response);
             } else {
