@@ -88,7 +88,7 @@ require('./src/controller/chat/chat')(io.of('/chat'));
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
 app.use(cors({
-    origin:['http://localhost:3000'],
+    origin:['*'],
     methods : ['GET' , 'POST', 'PUT' , 'DELETE'],
     credential : true // 쿠키사용
 }))
