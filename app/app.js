@@ -8,7 +8,6 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-
 // 라우터 모듈 정의
 var dicomRouter = require('./src/routes/dicom/dicom');
 var patientRouter = require('./src/routes/patient/patient')
@@ -18,8 +17,6 @@ require('dotenv').config();
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-
-
 
 const PORT = 3000;
 
@@ -58,7 +55,6 @@ io.on('connection', socket => {
             socket.emit('joined', room);
         } else {
             socket.emit('full',room);
-            
         }
     
         socket.on('disconnect', () => {
