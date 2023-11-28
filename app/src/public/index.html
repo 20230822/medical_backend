@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Socket.io Chat Example</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h3>Socket.io Chat Example</h3>
+    <form class="form-inline">
+      <div class="form-group">
+        <label for="msgForm">Message: </label>
+        <input type="text" class="form-control" id="msgForm">
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+      <button type="button" class="btn btn-secondary" id="otherButton">Other Action</button>
+
+    </form>
+    <div id="chatLogs"></div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  $(function(){
+    // socket.io 서버에 접속한다
+    var socket = io('/chat');
+    const name = makeRandomName();
+    // 서버로 자신의 정보를 전송한다.
+    socket.emit('enter_room', '0229', acknowledgmentData =>{
+      if(acknowledgmentData ==false){
+          socket.on('error', data =>{
+            console.error(data);
+          })
+      }
+      if(acknowledgmentData == true){
+        console.log('메시지 로그');
+        socket.on('message_log', data =>{
+        data.forEach(element => {
+          $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        });
+
+        // console.log('upper Log!');
+        // const msg = {
+        // "chat_id" : 31,
+        // "user" : "ulm",
+        // "patient" : "0229",
+        // "content" : "upper message",
+        // }
+
+        // socket.emit('upper_message', JSON.stringify(msg), acknowledgmentData =>{
+        //   if(acknowledgmentData == true){
+        //     socket.on('message_log', data =>{
+        //       console.log(data);
+        //       data.forEach(element => {
+        //         $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        //       });
+        //     })
+        //   }
+        // })
+        
+        //날짜 불러오기
+        // console.log('day log');
+        
+
+        // socket.emit('day_log',"0229",'2023-11-24' , acknowledgmentData =>{
+        //   if(acknowledgmentData == true){
+        //     socket.on('message_log', data =>{
+        //       console.log(data);
+        //       data.forEach(element => {
+        //         $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        //       });
+        //     })
+        //   }
+        // })
+
+
+        //채팅 내용으로 찾기
+        console.log('채팅 찾기 content : a');
+        socket.emit('find_message_key' , '0229' , 'a', acknowledgmentData =>{
+          if(acknowledgmentData){
+            console.log('키값 받음' ,acknowledgmentData);
+            socket.emit('next', acknowledgmentData[0] , acknowledgmentData =>{
+              acknowledgmentData.forEach(element =>{
+                $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+              })
+            })
+          }
+        })
+      })
+      }
+
+    });
+
+
+    // 서버로부터의 메시지가 수신되면
+    socket.on("message", function(data) {
+      $("#chatLogs").append("<div>" + data.content + " from <strong>" + data.user_id  + "</strong></div>");
+    });
+
+    socket.on("join", function(data) {
+      $("#chatLogs").append("<div>" + data  + "</strong></div>");
+    });
+
+    socket.on("leave", function(data) {
+      $("#chatLogs").append("<div>" + data  + "</strong></div>");
+    });
+
+    // Send 버튼이 클릭되면
+    $("form").submit(function(e) {
+      e.preventDefault();
+      var $msgForm = $("#msgForm");
+
+      // 서버로 메시지를 전송한다.
+      const msg = {
+        "user_id" : name,
+        "patient_cd" : "0229",
+        "content" : $msgForm.val(),
+      }
+
+      socket.emit("message", JSON.stringify(msg), acknowledgmentData =>{
+        if(acknowledgmentData ==false){
+          socket.on('error', data =>{
+            console.error(data);
+          })
+        }
+      });
+      $msgForm.val("");
+    });
+
+    $("#otherButton").on("click", function() {
+        
+    })
+
+    function makeRandomName(){
+      var name = "";
+      var possible = "abcdefghijklmnopqrstuvwxyz";
+      for( var i = 0; i < 3; i++ ) {
+        name += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return name;
+    }
+  });
+  </script>
+</body>
+</html>
