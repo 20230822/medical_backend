@@ -1,6 +1,5 @@
 "use strict";
 
-const dicomParser = require('dicom-parser');
 const DicomStorage = require('./DicomStorage');
 const fs = require("fs");
 const AWS = require("aws-sdk");
@@ -91,7 +90,7 @@ class Dicom {
         res.send(data.Body);
         */
     }
-
+    
     async list() {
         const client = this.body;
         try {
