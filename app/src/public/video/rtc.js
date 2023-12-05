@@ -1,9 +1,7 @@
 "use strict";
 
 let localVideo = document.getElementById("localVideo");
-let remoteVideo1 = document.getElementById("remoteVideo1");
-let remoteVideo2 = document.getElementById("remoteVideo2");
-let remoteVideo3 = document.getElementById("remoteVideo3");
+let remoteVideo = document.getElementById("remoteVideo");
 
 // WebRTC 변수
 let isInitiator = false;
@@ -12,10 +10,6 @@ let isStarted = false;
 let localStream;
 let remoteStream;
 let pc;
-
-let remoteStream1;
-let remoteStream2;
-let remoteStream3;
 
 // STUN 서버 설정
 let pcConfig = {
@@ -43,10 +37,6 @@ socket.on('created', (room,id)=>{
 
 socket.on('full', room=>{
   console.log('Room '+room+'is full');
-   // 방이 가득 찼을 때 새로운 방 생성
-   room = 'room' + Math.floor(Math.random() * 1000);
-   console.log('Creating new room: ' + room);
-   socket.emit('create or join', room);
 });
 
 socket.on('join',room=>{
@@ -140,15 +130,14 @@ function handleCreateOfferError(event) {
 
 function handleRemoteStreamAdded(event) {
   console.log("remote stream added");
-  if (!remoteStream1) {
-    remoteStream1 = event.stream;
-    remoteVideo1.srcObject = remoteStream1;
-  } else if (!remoteStream2) {
-    remoteStream2 = event.stream;
-    remoteVideo2.srcObject = remoteStream2;
-  } else if (!remoteStream3) {
-    remoteStream3 = event.stream;
-    remoteVideo3.srcObject = remoteStream3;
+  // event 객체로부터 스트림을 추출하는 예시
+  const remoteStream = event.stream || event.target.stream || null;
+    
+  if (remoteStream) {
+    // 원하는 동작을 수행하거나 스트림을 저장하는 등의 작업을 수행할 수 있습니다.
+    remoteVideo.srcObject = remoteStream;
+  } else {
+    console.error("스트림을 찾을 수 없습니다.");
   }
 }
 
