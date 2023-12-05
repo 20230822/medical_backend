@@ -14,6 +14,8 @@
         <input type="text" class="form-control" id="msgForm">
       </div>
       <button type="submit" class="btn btn-primary">Send</button>
+      <button type="button" class="btn btn-secondary" id="otherButton">Other Action</button>
+
     </form>
     <div id="chatLogs"></div>
   </div>
@@ -25,7 +27,70 @@
     var socket = io('/chat');
     const name = makeRandomName();
     // 서버로 자신의 정보를 전송한다.
-    socket.emit('enter_room', 'room1');
+    socket.emit('enter_room', '0229', acknowledgmentData =>{
+      if(acknowledgmentData ==false){
+          socket.on('error', data =>{
+            console.error(data);
+          })
+      }
+      if(acknowledgmentData == true){
+        console.log('메시지 로그');
+        socket.on('message_log', data =>{
+        data.forEach(element => {
+          $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        });
+
+        // console.log('upper Log!');
+        // const msg = {
+        // "chat_id" : 31,
+        // "user" : "ulm",
+        // "patient" : "0229",
+        // "content" : "upper message",
+        // }
+
+        // socket.emit('upper_message', JSON.stringify(msg), acknowledgmentData =>{
+        //   if(acknowledgmentData == true){
+        //     socket.on('message_log', data =>{
+        //       console.log(data);
+        //       data.forEach(element => {
+        //         $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        //       });
+        //     })
+        //   }
+        // })
+        
+        //날짜 불러오기
+        // console.log('day log');
+        
+
+        // socket.emit('day_log',"0229",'2023-11-24' , acknowledgmentData =>{
+        //   if(acknowledgmentData == true){
+        //     socket.on('message_log', data =>{
+        //       console.log(data);
+        //       data.forEach(element => {
+        //         $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+        //       });
+        //     })
+        //   }
+        // })
+
+
+        //채팅 내용으로 찾기
+        console.log('채팅 찾기 content : a');
+        socket.emit('find_message_key' , '0229' , 'a', acknowledgmentData =>{
+          if(acknowledgmentData){
+            console.log('키값 받음' ,acknowledgmentData);
+            socket.emit('next', acknowledgmentData[0] , acknowledgmentData =>{
+              acknowledgmentData.forEach(element =>{
+                $("#chatLogs").append("<div>" + element.content + " from <strong>" + element.user  + "</strong></div>");
+              })
+            })
+          }
+        })
+      })
+      }
+
+    });
 
 
     // 서버로부터의 메시지가 수신되면
@@ -49,12 +114,23 @@
       // 서버로 메시지를 전송한다.
       const msg = {
         "user_id" : name,
-        "patient_cd" : 321,
+        "patient_cd" : "0229",
         "content" : $msgForm.val(),
       }
-      socket.emit("message", JSON.stringify(msg));
+
+      socket.emit("message", JSON.stringify(msg), acknowledgmentData =>{
+        if(acknowledgmentData ==false){
+          socket.on('error', data =>{
+            console.error(data);
+          })
+        }
+      });
       $msgForm.val("");
     });
+
+    $("#otherButton").on("click", function() {
+        
+    })
 
     function makeRandomName(){
       var name = "";
