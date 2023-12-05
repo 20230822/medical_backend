@@ -82,6 +82,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // 채팅 컨트롤러 추가
+require('./src/controller/video/video')(io);
 require('./src/controller/chat/chat')(io.of('/chat'));
 
 app.use(express.static(path.join(__dirname, 'src', 'public')));

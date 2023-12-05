@@ -26,7 +26,7 @@ class Patient {
         const client = this.body;
         try {
             //데이터 저장
-            const response = await PatientStorage.getPatientInfo(client);
+            const response = await PatientStorage.getPatientInfo(client.Patient_cd);
             console.log(response);
 
             return response;
