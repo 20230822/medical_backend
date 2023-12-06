@@ -18,7 +18,7 @@ let pcConfig = {
       }]
 }
 
-let room = 'foo';
+let room = patient_cd;
 
 // socket.io 서버에 연결
 let socket = io();
