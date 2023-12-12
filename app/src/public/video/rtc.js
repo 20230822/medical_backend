@@ -18,14 +18,22 @@ let pcConfig = {
       }]
 }
 
-let room = 'foo';
+let room = '0229';
 
 // socket.io 서버에 연결
 let socket = io();
 
+
 // 방 생성 또는 참여 요청
 if(room !==''){
-socket.emit('create or join',room);
+socket.emit('create or join',room, acknowledgmentData =>{
+  if(acknowledgmentData == false){ //오류나 없는 환자
+    console.log('없는 환자입니다.')
+  }
+  else{
+    console.log('존재하는 환자입니다.!')
+  }
+});
 console.log('Attempted to create or join Room',room);
 }
 
