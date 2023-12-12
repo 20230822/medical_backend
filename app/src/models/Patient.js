@@ -48,6 +48,20 @@ class Patient {
             return { success: false, msg: error.message };
         }
     }
+
+    async del() {
+        const client = this.body;
+        try {
+            //데이터 저장
+            const result = await PatientStorage.delPatientInfo(client.Patient_cd);
+            console.log(result);
+            
+            return { success: true, msg: 'PatientInfo Delete successfully' };
+        } catch (error) {
+            console.error('Error delete PatientInfo:', error);
+            return { success: false, msg: error.message };
+        }
+    }
 }
 
 module.exports = Patient;
