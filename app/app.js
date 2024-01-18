@@ -53,7 +53,9 @@ app.use('/api/user', userRouter);
 
 // 정적 파일 제공
 app.use(express.static(path.join(__dirname, 'src', 'public', 'build')));
-
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/public/build/index.html'));
+});
 
 // 서버 시작
 server.listen(PORT, () => {
